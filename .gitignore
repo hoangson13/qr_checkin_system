@@ -1,0 +1,17 @@
+.idea/*
+__pycache__/
+venv
+.ipynb_checkpoints
+log
+temp/
+.env
+.local.env
+.scannerwork/
+start.sh
+stop.sh
+/data/
+/models/
+*.egg-info
+/cache/
+.DS_Store
+
