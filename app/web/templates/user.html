@@ -17,8 +17,8 @@
                 <i class="bi bi-people-fill me-2"></i>User Management
             </a>
             <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="/ui">
-                    <i class="bi bi-house me-1"></i>Home
+                <a class="nav-link" href="/logout">
+                    <i class="bi bi-box-arrow-right me-1"></i>Logout
                 </a>
             </div>
         </div>
@@ -28,21 +28,20 @@
         <!-- Header Section -->
         <div class="row mb-4">
             <div class="col">
-                <h2 class="mb-3">
-                    <i class="bi bi-people me-2"></i>User Management
-                </h2>
-                <p class="text-muted">Manage user information and check-in status</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">
+                        <i class="bi bi-people me-2"></i>User Management (<span id="totalCheckin">0</span> / <span id="totalUsers">0</span>)
+                    </h2>
+                    <button class="btn btn-primary" id="addUserBtn" data-bs-toggle="modal" data-bs-target="#userModal">
+                        <i class="bi bi-plus-circle me-1"></i>Add New User
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- Action Bar -->
+        <!-- Search Bar -->
         <div class="row mb-4">
-            <div class="col-md-6">
-                <button class="btn btn-primary" id="addUserBtn" data-bs-toggle="modal" data-bs-target="#userModal">
-                    <i class="bi bi-plus-circle me-1"></i>Add New User
-                </button>
-            </div>
-            <div class="col-md-6">
+            <div class="col">
                 <div class="input-group">
                     <span class="input-group-text">
                         <i class="bi bi-search"></i>
@@ -52,37 +51,22 @@
             </div>
         </div>
 
-        <!-- Action Bar with Refresh -->
-        <div class="row mb-4">
-            <div class="col text-end">
-                <button class="btn btn-outline-secondary" id="refreshBtn">
-                    <i class="bi bi-arrow-clockwise me-1"></i>Refresh
-                </button>
-            </div>
-        </div>
-
 
 
         <!-- Users Table -->
         <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="bi bi-table me-2"></i>Users List
-                </h5>
-            </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th width="10%">User ID</th>
-                                <th width="15%">Name</th>
-                                <th width="12%">Title</th>
-                                <th width="12%">Department</th>
-                                <th width="8%">Seat #</th>
-                                <th width="10%">Status</th>
-                                <th width="13%">Check-in Time</th>
-                                <th width="10%">Created</th>
+                                <th width="10%">Mã Đại biểu</th>
+                                <th width="15%">Họ và tên</th>
+                                <th width="18%">Chức danh</th>
+                                <th width="12%">Đơn vị</th>
+                                <th width="8%">Số ghế</th>
+                                <th width="10%">Trạng thái</th>
+                                <th width="13%">Thời gian</th>
                                 <th width="5%">Actions</th>
                             </tr>
                         </thead>
@@ -126,20 +110,19 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="userId" class="form-label">
-                                        <i class="bi bi-person-badge me-1"></i>User ID <span class="text-danger">*</span>
+                                        <i class="bi bi-person-badge me-1"></i>Mã Đại biểu<span class="text-danger">*</span>
                                     </label>
                                     <input type="text" class="form-control" id="userId" name="user_id" required
-                                           placeholder="Enter unique user ID">
-                                    <div class="form-text">Unique identifier for the user</div>
+                                           placeholder="Nhập mã đại biểu">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="userName" class="form-label">
-                                        <i class="bi bi-person me-1"></i>Full Name <span class="text-danger">*</span>
+                                        <i class="bi bi-person me-1"></i>Họ và tên<span class="text-danger">*</span>
                                     </label>
                                     <input type="text" class="form-control" id="userName" name="name" required
-                                           placeholder="Enter full name">
+                                           placeholder="Nhập họ và tên">
                                 </div>
                             </div>
                         </div>
@@ -147,19 +130,19 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="userTitle" class="form-label">
-                                        <i class="bi bi-briefcase me-1"></i>Job Title
+                                        <i class="bi bi-briefcase me-1"></i>Chức vụ
                                     </label>
                                     <input type="text" class="form-control" id="userTitle" name="title"
-                                           placeholder="Enter job title">
+                                           placeholder="Nhập chức vụ">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="userDepartment" class="form-label">
-                                        <i class="bi bi-building me-1"></i>Department
+                                        <i class="bi bi-building me-1"></i>Phòng ban
                                     </label>
                                     <input type="text" class="form-control" id="userDepartment" name="department"
-                                           placeholder="Enter department">
+                                           placeholder="Nhập phòng ban">
                                 </div>
                             </div>
                         </div>
@@ -167,27 +150,27 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="seatNumber" class="form-label">
-                                        <i class="bi bi-geo-alt me-1"></i>Seat Number
+                                        <i class="bi bi-geo-alt me-1"></i>Số ghế
                                     </label>
                                     <input type="number" class="form-control" id="seatNumber" name="seat_number"
-                                           placeholder="Enter seat number" min="1">
+                                           placeholder="Nhập số ghế" min="1">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="checkInStatus" class="form-label">
-                                        <i class="bi bi-check-circle me-1"></i>Check-in Status
+                                        <i class="bi bi-check-circle me-1"></i>Trạng thái Check-in
                                     </label>
                                     <select class="form-select" id="checkInStatus" name="is_checked_in">
-                                        <option value="false">Checked Out</option>
-                                        <option value="true">Checked In</option>
+                                        <option value="false">Chưa Check-in</option>
+                                        <option value="true">Đã Check-in</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3" id="checkInTimeGroup" style="display: none;">
                             <label for="checkInTime" class="form-label">
-                                <i class="bi bi-clock me-1"></i>Check-in Time
+                                <i class="bi bi-clock me-1"></i>Thời gian Check-in
                             </label>
                             <input type="datetime-local" class="form-control" id="checkInTime" name="check_in_time">
                         </div>
@@ -234,7 +217,39 @@
         </div>
     </div>
 
-
+    <!-- QR Code Modal -->
+    <div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="qrModalLabel">
+                        <i class="bi bi-qr-code me-2"></i>User QR Code
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="mb-3">
+                        <h6 id="qrUserName" class="text-muted"></h6>
+                        <small id="qrUserId" class="text-muted"></small>
+                    </div>
+                    <div class="qr-code-container">
+                        <img id="qrCodeImage" src="" alt="QR Code" class="img-fluid" style="max-width: 300px; border: 1px solid #dee2e6; border-radius: 8px;">
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-muted">Scan this QR code for check-in/check-out</small>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>Close
+                    </button>
+                    <button type="button" class="btn btn-primary" id="downloadQrBtn">
+                        <i class="bi bi-download me-1"></i>Download
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Load CSS files -->
     <link rel="stylesheet" href="/ui/static/styles/base.css">

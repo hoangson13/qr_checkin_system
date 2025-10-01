@@ -222,6 +222,7 @@
     background-color: var(--primary-color);
     border-color: var(--primary-color);
     box-shadow: var(--shadow-primary-hover);
+    color: white;
 }
 
 .pagination .page-item.disabled .page-link {

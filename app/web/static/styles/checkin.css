@@ -1,0 +1,316 @@
+/* Check-in Scanner Page Styles */
+
+/* Scanner Card */
+.scanner-card {
+    border: none;
+    box-shadow: var(--shadow-lg);
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+/* Camera Container */
+.camera-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.camera-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.scanner-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+/* Scanner Overlay */
+.scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.scanner-frame {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* Scanner Corners */
+.scanner-corner {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 3px solid var(--primary-color);
+}
+
+.scanner-corner.top-left {
+    top: -3px;
+    left: -3px;
+    border-right: none;
+    border-bottom: none;
+    border-top-left-radius: 12px;
+}
+
+.scanner-corner.top-right {
+    top: -3px;
+    right: -3px;
+    border-left: none;
+    border-bottom: none;
+    border-top-right-radius: 12px;
+}
+
+.scanner-corner.bottom-left {
+    bottom: -3px;
+    left: -3px;
+    border-right: none;
+    border-top: none;
+    border-bottom-left-radius: 12px;
+}
+
+.scanner-corner.bottom-right {
+    bottom: -3px;
+    right: -3px;
+    border-left: none;
+    border-top: none;
+    border-bottom-right-radius: 12px;
+}
+
+/* Scanner Animation Line */
+.scanner-line {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    right: 10px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    animation: scannerLine 2s ease-in-out infinite;
+    opacity: 0.8;
+}
+
+@keyframes scannerLine {
+    0%, 100% {
+        transform: translateY(-125px);
+        opacity: 0;
+    }
+    50% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Scanner Instruction */
+.scanner-instruction {
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 8px 16px;
+    border-radius: 20px;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    text-align: center;
+    backdrop-filter: blur(4px);
+}
+
+/* Camera Status */
+.camera-status {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    backdrop-filter: blur(4px);
+}
+
+.camera-status.success {
+    background: rgba(40, 167, 69, 0.9);
+}
+
+.camera-status.error {
+    background: rgba(220, 53, 69, 0.9);
+}
+
+
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.status-badge.checked-in {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.checked-out {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* User Avatar in Modal */
+.user-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Check-in Info Grid */
+.check-in-info {
+    background: var(--bg-light);
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 16px;
+}
+
+/* Success States */
+.scanner-frame.success {
+    border-color: #28a745;
+    background: rgba(40, 167, 69, 0.1);
+}
+
+.scanner-frame.success .scanner-corner {
+    border-color: #28a745;
+}
+
+.scanner-frame.success .scanner-line {
+    background: linear-gradient(90deg, transparent, #28a745, transparent);
+}
+
+/* Error States */
+.scanner-frame.error {
+    border-color: #dc3545;
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.scanner-frame.error .scanner-corner {
+    border-color: #dc3545;
+}
+
+/* Loading States */
+.scanner-frame.scanning {
+    border-color: var(--primary-color);
+    background: rgba(13, 110, 253, 0.1);
+}
+
+.scanner-frame.scanning .scanner-corner {
+    border-color: var(--primary-color);
+    animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .camera-container {
+        height: 300px;
+    }
+    
+    .scanner-frame {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .scanner-corner {
+        width: 25px;
+        height: 25px;
+    }
+    
+    .scanner-instruction {
+        font-size: 0.8rem;
+        margin-top: 15px;
+    }
+    
+
+}
+
+@media (max-width: 576px) {
+    .camera-container {
+        height: 250px;
+    }
+    
+    .scanner-frame {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .card-footer .row .col-6 {
+        margin-bottom: 8px;
+    }
+    
+    .user-avatar {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .scanner-line,
+    .scanner-corner {
+        animation: none;
+    }
+    
+
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .scanner-frame {
+        border-width: 3px;
+    }
+    
+    .scanner-corner {
+        border-width: 4px;
+    }
+    
+    .camera-status,
+    .scanner-instruction {
+        background: rgba(0, 0, 0, 0.9);
+    }
+}

@@ -30,6 +30,13 @@ async def users(request: Request):
     )
 
 
+@router.get("/checkin", response_class=HTMLResponse)
+async def checkin(request: Request):
+    return templates.TemplateResponse(
+        name="checkin.html", context={'request': request}
+    )
+
+
 @router.get("/validate")
 def validate(x_auth_secret_key: str = Header()):
     if x_auth_secret_key is None:

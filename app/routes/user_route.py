@@ -1,15 +1,21 @@
+import os
+
 import pandas as pd
 
 import traceback
 from typing import Annotated
 
 from io import BytesIO
+
+import qrcode
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from starlette.responses import JSONResponse
 
+import dconfig
 import vnd_log
 from dao import user_dao
 from dao.user_dao import UserObj
+from services.qr_service import gen_qr
 from utils.authen import auth_secret_key
 
 router = APIRouter(
@@ -22,12 +28,13 @@ router = APIRouter(
 @router.get("/")
 def get_users(page_number: int = 0, page_size: int = 10, sort_type: str = "desc", search: str = None):
     try:
-        users, total = user_dao.get_users(page_number, page_size, sort_type, search)
+        users, total, checkin_total = user_dao.get_users(page_number, page_size, sort_type, search)
 
         return JSONResponse({
             "message": "Get user successfully",
             "data": [i.to_dict() for i in users],
-            "total": total
+            "total": total,
+            "checkin_total": checkin_total
         }, status_code=200)
     except Exception as e:
         vnd_log.dlog_e(f'Something wrong: {str(e)}')
@@ -56,6 +63,8 @@ def get_user(user_id: str):
 def insert_user(data: user_dao.document_class):
     try:
         user_id = user_dao.insert_user(data)
+        gen_qr(user_id)
+
         return JSONResponse({
             "message": "Insert user successfully",
             "data": {"user_id": user_id}
@@ -119,6 +128,7 @@ def import_users(file: Annotated[UploadFile, File()]):
                 is_checked_in=bool(row.get('is_checked_in', False))
             )
             user_id = user_dao.insert_one(user.to_dict())
+            gen_qr(user_id)
             user_ids.append(user_id)
         return JSONResponse({
             "message": "Import users successfully",

@@ -1,8 +1,8 @@
 // User Management JavaScript Module
 // Handles CRUD operations for user management
 
-import { formatDate, getCookie } from './utils/utils-module.js';
-import { showConfirmationDialog, showSuccessToast, showErrorToast } from './components/dialog-utils.js';
+import { formatDate } from './utils/utils-module.js';
+import { showSuccessToast, showErrorToast } from './components/dialog-utils.js';
 import { loadUsersAPI, saveUserAPI, deleteUserAPI } from './api/user-api.js';
 
 // Global variables
@@ -11,6 +11,8 @@ let currentUser = null;
 let currentPage = 0;
 const PAGE_SIZE = 10;
 let totalUsers = 0;
+let totalCheckin = 0;
+let autoRefreshInterval = null;
 
 
 
@@ -25,7 +27,6 @@ const elements = {
     
     // Search and controls
     searchInput: document.getElementById('searchInput'),
-    refreshBtn: document.getElementById('refreshBtn'),
     
     // Modal elements
     userModal: document.getElementById('userModal'),
@@ -48,6 +49,13 @@ const elements = {
     deleteUserName: document.getElementById('deleteUserName'),
     confirmDeleteBtn: document.getElementById('confirmDeleteBtn'),
     
+    // QR modal
+    qrModal: document.getElementById('qrModal'),
+    qrUserName: document.getElementById('qrUserName'),
+    qrUserId: document.getElementById('qrUserId'),
+    qrCodeImage: document.getElementById('qrCodeImage'),
+    downloadQrBtn: document.getElementById('downloadQrBtn'),
+    
     // Action buttons
     addUserBtn: document.getElementById('addUserBtn')
 };
@@ -56,15 +64,51 @@ const elements = {
 document.addEventListener('DOMContentLoaded', function() {
     initializeEventListeners();
     loadUsers();
+    startAutoRefresh();
 });
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', function() {
+    stopAutoRefresh();
+});
+
+// Auto-refresh functionality
+function startAutoRefresh() {
+    // Clear any existing interval
+    stopAutoRefresh();
+    
+    // Set up auto-refresh every 60 seconds (60000 ms)
+    autoRefreshInterval = setInterval(() => {
+        // Only auto-refresh if no modals are open and not currently loading
+        if (!isAnyModalOpen() && !isLoading()) {
+            const currentSearch = elements.searchInput.value;
+            loadUsers(currentPage, currentSearch);
+        }
+    }, 60000);
+}
+
+function stopAutoRefresh() {
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+        autoRefreshInterval = null;
+    }
+}
+
+function isAnyModalOpen() {
+    // Check if any Bootstrap modals are currently shown
+    const modals = document.querySelectorAll('.modal.show');
+    return modals.length > 0;
+}
+
+function isLoading() {
+    // Check if loading indicator is visible
+    return elements.loadingIndicator.style.display !== 'none';
+}
 
 // Event Listeners
 function initializeEventListeners() {
     // Search functionality
     elements.searchInput.addEventListener('input', debounce(handleSearch, 300));
-    
-    // Refresh button
-    elements.refreshBtn.addEventListener('click', refreshData);
     
     // Modal events
     elements.addUserBtn.addEventListener('click', openAddUserModal);
@@ -73,6 +117,9 @@ function initializeEventListeners() {
     
     // Delete modal
     elements.confirmDeleteBtn.addEventListener('click', confirmDelete);
+    
+    // QR modal
+    elements.downloadQrBtn.addEventListener('click', downloadQRCode);
     
     // Modal reset on close
     elements.userModal.addEventListener('hidden.bs.modal', resetUserForm);
@@ -86,11 +133,15 @@ async function loadUsers(page = 0, search = '') {
         const data = await loadUsersAPI(page, search);
         
         users = data.data || [];
+        totalCheckin = data.checkin_total || 0;
         totalUsers = data.total || 0;
         currentPage = page;
         
         renderUsersTable();
         renderPagination();
+        
+        document.getElementById('totalUsers').textContent = totalUsers;
+        document.getElementById('totalCheckin').textContent = totalCheckin;
     } catch (error) {
         handleAPIError(error);
     }
@@ -189,9 +240,7 @@ function createUserRow(user) {
         </td>
         <td>${escapeHtml(user.title || 'N/A')}</td>
         <td>
-            <span class="badge bg-light text-dark">
-                <i class="bi bi-building me-1"></i>${escapeHtml(user.department || 'N/A')}
-            </span>
+            <span class="fw-medium">${escapeHtml(user.department || 'N/A')}</span>
         </td>
         <td>
             <span class="badge bg-secondary">
@@ -205,10 +254,11 @@ function createUserRow(user) {
             </small>
         </td>
         <td>
-            <small class="text-muted">${createdAt}</small>
-        </td>
-        <td>
             <div class="btn-group" role="group">
+                <button class="btn btn-action btn-view" onclick="viewUserQR('${user._id}')" 
+                        title="View QR Code">
+                    <i class="bi bi-qr-code"></i>
+                </button>
                 <button class="btn btn-action btn-edit" onclick="editUser('${user._id}')" 
                         title="Edit User">
                     <i class="bi bi-pencil"></i>
@@ -293,6 +343,8 @@ function createPageItem(pageNum, text) {
 function handleSearch() {
     const searchTerm = elements.searchInput.value;
     loadUsers(0, searchTerm);
+    // Restart auto-refresh timer when user searches
+    startAutoRefresh();
 }
 
 
@@ -404,6 +456,40 @@ window.editUser = function(userId) {
     }
 };
 
+window.viewUserQR = function(userId) {
+    const user = users.find(u => u._id === userId);
+    if (user) {
+        // Set user info in modal
+        elements.qrUserName.textContent = user.name || 'Unknown User';
+        elements.qrUserId.textContent = `ID: ${user.user_id || 'N/A'}`;
+        
+        // Set QR code image source
+        elements.qrCodeImage.src = `/qr/${user._id}.png`;
+        elements.qrCodeImage.alt = `QR Code for ${user.name || user.user_id}`;
+        
+        // Store current user for download functionality
+        currentUser = user;
+        
+        // Show modal
+        const modal = new bootstrap.Modal(elements.qrModal);
+        modal.show();
+    }
+};
+
+function downloadQRCode() {
+    if (currentUser && currentUser._id) {
+        // Create a temporary link to download the QR code
+        const link = document.createElement('a');
+        link.href = `/qr/${currentUser._id}.png`;
+        link.download = `qr-code-${currentUser.user_id || currentUser._id}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        showSuccessToast('QR code download started!');
+    }
+}
+
 window.deleteUserConfirm = function(userId) {
     const user = users.find(u => u._id === userId);
     if (user) {
@@ -425,18 +511,13 @@ function confirmDelete() {
     }
 }
 
-function refreshData() {
-    loadUsers(currentPage, elements.searchInput.value);
-}
+
 
 // Utility Functions
 function showLoading(show) {
     elements.loadingIndicator.style.display = show ? 'block' : 'none';
     elements.usersTableBody.style.opacity = show ? '0.5' : '1';
 }
-
-
-
 
 
 function escapeHtml(text) {

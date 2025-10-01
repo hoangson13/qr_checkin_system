@@ -40,8 +40,8 @@ export async function apiRequest(endpoint, options = {}) {
 // Load users from API
 export async function loadUsersAPI(page = 0, search = '') {
     const params = new URLSearchParams({
-        page: page.toString(),
-        limit: '10', // PAGE_SIZE
+        page_number: page.toString(),
+        page_size: '10', // PAGE_SIZE
         search: search
     });
 

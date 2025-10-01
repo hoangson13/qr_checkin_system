@@ -43,13 +43,14 @@ class UserDAO(BaseDAO):
             ]
 
         total = self.count(q)
+        checkin_total = self.count({"is_checked_in": True})
 
         data = self.find_many(
             q,
             skip=page_number * page_size, limit=page_size,
-            sort=[("created_at", sort_type)]
+            sort=[("updated_at", sort_type)]
         )
-        return [UserObj(**i) for i in data], total
+        return [UserObj(**i) for i in data], total, checkin_total
 
     def insert_user(self, created_fields: dict):
         """Insert user"""
@@ -57,4 +58,4 @@ class UserDAO(BaseDAO):
 
     def update_user(self, user_id: str, updated_fields: dict):
         """Update user by user_id"""
-        return self.update_many({"_id": ObjectId(user_id)}, updated_fields)
+        return self.update_many({"_id": ObjectId(user_id)}, {"$set": updated_fields})
