@@ -45,6 +45,7 @@ class DevelopmentConfig(Config):
         LOG_DIR = '../log'
 
     # DATABASE CONFIG
+    # sudo docker run --name mongodb -d -p 27017:27017 mongodb/mongodb-community-server:latest
     DB_CONNECTION_STRING = os.getenv('DB_CONNECTION_STRING')
     DB_NAME = os.getenv('DB_NAME')
 

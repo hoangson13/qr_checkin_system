@@ -1,0 +1,70 @@
+/* Home page specific styles */
+
+.login-container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 30px;
+    box-shadow: var(--shadow-primary);
+    border-radius: 12px;
+    background: var(--bg-white);
+    border: 1px solid var(--gray-200);
+}
+
+.login-container .title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.login-container .description {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group .form-label {
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    font-weight: 500;
+    border-radius: 8px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-primary-hover);
+    transition: all 0.2s ease;
+}
+
+/* Input field enhancements */
+.form-control {
+    border-radius: 8px;
+    border: 1px solid var(--gray-400);
+    padding: 12px 15px;
+    font-size: 0.95rem;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-primary-focus);
+}
+
+/* Footer styling */
+footer {
+    border-top: 1px solid var(--gray-200);
+}
+
+footer p {
+    margin: 0;
+    font-size: 0.9rem;
+}

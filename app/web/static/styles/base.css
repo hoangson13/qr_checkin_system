@@ -1,0 +1,127 @@
+/* Base reusable styles */
+
+/* CSS Custom Properties (Variables) for consistent theming */
+:root {
+    /* Primary Brand Colors */
+    --primary-color: #0d6efd;
+    --primary-dark: #4c63d2;
+    --primary-darker: #3c50b6;
+    --primary-light: #e3f2fd;
+    --primary-lighter: #f8f9ff;
+    --primary-lightest: #f0f4ff;
+
+    /* Secondary Colors */
+    --secondary-color: #2196f3;
+    --secondary-rgba: rgba(33, 150, 243, 0.15);
+
+    /* Neutral Gray Colors */
+    --gray-50: #f8f9fa;
+    --gray-100: #f7f8f9;
+    --gray-200: #e9ecef;
+    --gray-300: #e2e8f0;
+    --gray-400: #ced4da;
+    --gray-500: #6c757d;
+    --gray-600: #495057;
+    --gray-700: #4a5568;
+    --gray-800: #2d3748;
+    --gray-900: #333;
+
+    /* Border Colors */
+    --border-light: #e3e6f0;
+    --border-primary: var(--primary-color);
+    --border-secondary: var(--secondary-color);
+
+    /* Shadow Variables */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15);
+    --shadow-primary: 0 4px 20px rgba(0, 0, 0, 0.1);
+    --shadow-primary-focus: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+    --shadow-primary-hover: 0 4px 12px rgba(13, 110, 253, 0.3);
+
+    /* Text Colors */
+    --text-primary: var(--gray-900);
+    --text-secondary: var(--gray-500);
+    --text-muted: var(--gray-600);
+    --text-dark: var(--gray-800);
+
+    /* Background Colors */
+    --bg-light: var(--gray-50);
+    --bg-white: #ffffff;
+    --bg-primary-light: var(--primary-lighter);
+    --bg-secondary-light: var(--primary-light);
+
+    /* Success/Error Colors */
+    --success-color: #28a745;
+    --error-bg: #f8d7da;
+    --error-text: #721c24;
+    --error-border: #f5c6cb;
+}
+
+/* Form components */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Typography */
+.title {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--text-primary);
+}
+
+.description {
+    text-align: center;
+    margin-bottom: 25px;
+    color: var(--text-secondary);
+}
+
+/* Layout components */
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background: var(--bg-light);
+}
+
+/* Content display */
+.content-pre {
+    background-color: var(--bg-light);
+    padding: 1rem;
+    border-radius: 0.25rem;
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
+
+.config-pre {
+    background-color: var(--bg-light);
+    padding: 1rem;
+    border-radius: 0.25rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Avatar components */
+.avatar-sm {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.avatar-md {
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.avatar-lg {
+    width: 64px;
+    height: 64px;
+    font-size: 24px;
+    font-weight: 600;
+}

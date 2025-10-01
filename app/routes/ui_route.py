@@ -23,6 +23,13 @@ async def index(request: Request):
     )
 
 
+@router.get("/users", response_class=HTMLResponse)
+async def users(request: Request):
+    return templates.TemplateResponse(
+        name="user.html", context={'request': request}
+    )
+
+
 @router.get("/validate")
 def validate(x_auth_secret_key: str = Header()):
     if x_auth_secret_key is None:

@@ -7,7 +7,7 @@ from starlette.staticfiles import StaticFiles
 import dconfig
 import vnd_log
 from dconfig import config_object
-from routes import ui_route
+from routes import ui_route, user_route
 from services.init_services import on_startup, on_shutdown
 
 
@@ -20,8 +20,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-# UI routes
 app.include_router(ui_route.router)
+app.include_router(user_route.router)
 
 static_dir = os.path.join(dconfig.cur_dir, "web", "static")
 app.mount("/ui/static", StaticFiles(directory=static_dir), name="static")

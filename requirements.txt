@@ -4,3 +4,6 @@ python-multipart==0.0.18
 fastapi==0.112.0
 requests==2.31.0
 pymongo==4.11.3
+pandas==2.0.3
+numpy==1.24.4
+openpyxl==3.1.5
