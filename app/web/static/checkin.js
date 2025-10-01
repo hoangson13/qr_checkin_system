@@ -25,6 +25,8 @@ const elements = {
     // Control buttons
     toggleCameraBtn: document.getElementById('toggleCameraBtn'),
     switchCameraBtn: document.getElementById('switchCameraBtn'),
+    requestPermissionBtn: document.getElementById('requestPermissionBtn'),
+    permissionRow: document.getElementById('permissionRow'),
     
     // Modals
     checkinModal: document.getElementById('checkinModal'),
@@ -59,6 +61,7 @@ function initializeEventListeners() {
     // Camera controls
     elements.toggleCameraBtn.addEventListener('click', toggleCamera);
     elements.switchCameraBtn.addEventListener('click', switchCamera);
+    elements.requestPermissionBtn.addEventListener('click', handlePermissionRequest);
     
     // Modal events
     elements.checkinModal.addEventListener('hidden.bs.modal', () => {
@@ -83,6 +86,19 @@ function initializeEventListeners() {
 // Camera Functions
 async function initializeCamera() {
     try {
+        // Check browser compatibility first
+        if (!checkBrowserSupport()) {
+            return;
+        }
+        
+        updateCameraStatus('Checking camera permissions...', 'loading');
+        
+        // Check and request camera permission
+        const permissionGranted = await checkAndRequestCameraPermission();
+        if (!permissionGranted) {
+            return;
+        }
+        
         updateCameraStatus('Requesting camera access...', 'loading');
         
         // Get available cameras
@@ -94,12 +110,241 @@ async function initializeCamera() {
     } catch (error) {
         console.error('Failed to initialize camera:', error);
         updateCameraStatus('Camera access denied', 'error');
-        showError('Camera Error', 'Unable to access camera. Please check permissions and try again.');
+        
+        let errorMessage = 'Unable to access camera. Please check permissions and try again.';
+        if (error.message) {
+            errorMessage = error.message;
+        }
+        
+        showError('Camera Error', errorMessage);
+    }
+}
+
+function checkBrowserSupport() {
+    // Check for required APIs
+    if (!navigator.mediaDevices) {
+        updateCameraStatus('MediaDevices API not supported', 'error');
+        showError('Browser Compatibility', 
+            'Your browser does not support camera access. Please use a modern browser like Chrome, Firefox, Safari, or Edge.');
+        return false;
+    }
+    
+    if (!navigator.mediaDevices.getUserMedia) {
+        updateCameraStatus('getUserMedia not supported', 'error');
+        showError('Browser Compatibility', 
+            'Your browser does not support camera access. Please update your browser to the latest version.');
+        return false;
+    }
+    
+    if (!window.isSecureContext) {
+        updateCameraStatus('Insecure context', 'error');
+        showError('Security Error', 
+            'Camera access requires a secure connection (HTTPS). Please access the site using HTTPS or localhost.');
+        return false;
+    }
+    
+    // Check for jsQR library
+    if (typeof jsQR === 'undefined') {
+        updateCameraStatus('QR library not loaded', 'error');
+        showError('Library Error', 
+            'QR code scanning library is not loaded. Please refresh the page.');
+        return false;
+    }
+    
+    return true;
+}
+
+// Camera Permission Functions
+async function checkAndRequestCameraPermission() {
+    try {
+        // First check if Permissions API is supported
+        if ('permissions' in navigator) {
+            const permission = await navigator.permissions.query({ name: 'camera' });
+            
+            switch (permission.state) {
+                case 'granted':
+                    updateCameraStatus('Camera permission granted', 'success');
+                    updatePermissionStatus('granted');
+                    return true;
+                    
+                case 'denied':
+                    updateCameraStatus('Camera permission denied', 'error');
+                    updatePermissionStatus('denied');
+                    showCameraPermissionError('denied');
+                    return false;
+                    
+                case 'prompt':
+                    updateCameraStatus('Requesting camera permission...', 'loading');
+                    updatePermissionStatus('prompt');
+                    return await requestCameraPermission();
+                    
+                default:
+                    // Fallback to direct request
+                    return await requestCameraPermission();
+            }
+        } else {
+            // Permissions API not supported, try direct request
+            updateCameraStatus('Requesting camera permission...', 'loading');
+            return await requestCameraPermission();
+        }
+    } catch (error) {
+        console.error('Permission check failed:', error);
+        // Fallback to direct camera request
+        return await requestCameraPermission();
+    }
+}
+
+async function requestCameraPermission() {
+    try {
+        // Request minimal camera access to check permission
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { 
+                width: { ideal: 320 }, 
+                height: { ideal: 240 } 
+            } 
+        });
+        
+        // Permission granted - stop the stream immediately
+        stream.getTracks().forEach(track => track.stop());
+        
+        updateCameraStatus('Camera permission granted', 'success');
+        updatePermissionStatus('granted');
+        return true;
+        
+    } catch (error) {
+        console.error('Camera permission request failed:', error);
+        
+        if (error.name === 'NotAllowedError') {
+            updateCameraStatus('Camera permission denied', 'error');
+            updatePermissionStatus('denied');
+            showCameraPermissionError('denied');
+        } else if (error.name === 'NotFoundError') {
+            updateCameraStatus('No camera found', 'error');
+            updatePermissionStatus('denied');
+            showCameraPermissionError('no-camera');
+        } else if (error.name === 'NotSupportedError') {
+            updateCameraStatus('Camera not supported', 'error');
+            updatePermissionStatus('denied');
+            showCameraPermissionError('not-supported');
+        } else {
+            updateCameraStatus('Camera permission failed', 'error');
+            updatePermissionStatus('denied');
+            showCameraPermissionError('unknown', error.message);
+        }
+        
+        return false;
+    }
+}
+
+function showCameraPermissionError(type, customMessage = '') {
+    let title = 'Camera Permission Required';
+    let message = '';
+    let showButton = false;
+    
+    switch (type) {
+        case 'denied':
+            title = 'Camera Access Denied';
+            message = `Camera permission has been denied. To use the QR scanner:
+            
+1. Look for a camera icon in your browser's address bar
+2. Click it and select "Allow" for camera access
+3. Refresh this page
+
+Or use the "Request Camera Permission" button below to try again.`;
+            showButton = true;
+            break;
+            
+        case 'no-camera':
+            title = 'No Camera Found';
+            message = 'No camera was detected on your device. Please make sure a camera is connected and try again.';
+            break;
+            
+        case 'not-supported':
+            title = 'Camera Not Supported';
+            message = 'Camera access is not supported by your browser. Please use a modern browser like Chrome, Firefox, Safari, or Edge.';
+            break;
+            
+        default:
+            title = 'Camera Error';
+            message = customMessage || 'An error occurred while accessing the camera. Please check your browser settings and try again.';
+            showButton = true;
+            break;
+    }
+    
+    // Show or hide permission button based on error type
+    showPermissionButton(showButton);
+    
+    showError(title, message);
+}
+
+async function checkCameraPermissionStatus() {
+    if ('permissions' in navigator) {
+        try {
+            const permission = await navigator.permissions.query({ name: 'camera' });
+            return permission.state;
+        } catch (error) {
+            console.error('Failed to check camera permission:', error);
+            return 'unknown';
+        }
+    }
+    return 'unknown';
+}
+
+async function handlePermissionRequest() {
+    try {
+        elements.requestPermissionBtn.disabled = true;
+        elements.requestPermissionBtn.innerHTML = '<div class="spinner-border spinner-border-sm me-2" role="status"></div>Requesting...';
+        
+        const granted = await requestCameraPermission();
+        
+        if (granted) {
+            elements.permissionRow.style.display = 'none';
+            showSuccessToast('Camera permission granted! You can now start the camera.');
+            // Auto-start camera after permission is granted
+            setTimeout(() => {
+                if (!cameraStream) {
+                    startCamera();
+                }
+            }, 1000);
+        }
+    } catch (error) {
+        console.error('Permission request error:', error);
+    } finally {
+        elements.requestPermissionBtn.disabled = false;
+        elements.requestPermissionBtn.innerHTML = '<i class="bi bi-shield-exclamation me-1"></i>Request Camera Permission';
+    }
+}
+
+function showPermissionButton(show = true) {
+    if (elements.permissionRow) {
+        elements.permissionRow.style.display = show ? 'block' : 'none';
+    }
+}
+
+function updatePermissionStatus(status) {
+    switch (status) {
+        case 'granted':
+            showPermissionButton(false);
+            break;
+        case 'denied':
+            showPermissionButton(true);
+            break;
+        case 'prompt':
+            showPermissionButton(true);
+            break;
+        default:
+            showPermissionButton(false);
+            break;
     }
 }
 
 async function getAvailableCameras() {
     try {
+        // Check if MediaDevices API is available
+        if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+            throw new Error('MediaDevices API is not supported in this browser or context');
+        }
+        
         const devices = await navigator.mediaDevices.enumerateDevices();
         availableCameras = devices.filter(device => device.kind === 'videoinput');
         
@@ -129,6 +374,16 @@ async function startCamera() {
         stopCamera();
         
         updateCameraStatus('Starting camera...', 'loading');
+        
+        // Check if MediaDevices API is available
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            throw new Error('Camera access is not supported in this browser or context. Please ensure you are using HTTPS and a modern browser.');
+        }
+        
+        // Check if we're in a secure context
+        if (!window.isSecureContext) {
+            throw new Error('Camera access requires a secure context (HTTPS). Please access the site using HTTPS.');
+        }
         
         const constraints = {
             video: {
@@ -160,7 +415,18 @@ async function startCamera() {
     } catch (error) {
         console.error('Failed to start camera:', error);
         updateCameraStatus('Camera failed to start', 'error');
-        showError('Camera Error', error.message || 'Failed to start camera');
+        
+        // Provide more specific error messages
+        let errorMessage = error.message || 'Failed to start camera';
+        if (error.name === 'NotAllowedError') {
+            errorMessage = 'Camera access was denied. Please allow camera access and refresh the page.';
+        } else if (error.name === 'NotFoundError') {
+            errorMessage = 'No camera was found on this device.';
+        } else if (error.name === 'NotSupportedError') {
+            errorMessage = 'Camera is not supported in this browser.';
+        }
+        
+        showError('Camera Error', errorMessage);
     }
 }
 
@@ -177,10 +443,28 @@ function stopCamera() {
 }
 
 async function toggleCamera() {
-    if (cameraStream) {
-        stopCamera();
-    } else {
-        await startCamera();
+    try {
+        if (cameraStream) {
+            stopCamera();
+        } else {
+            // Re-check browser support before starting
+            if (!checkBrowserSupport()) {
+                return;
+            }
+            
+            // Check permission again before starting
+            updateCameraStatus('Checking camera permissions...', 'loading');
+            const permissionGranted = await checkAndRequestCameraPermission();
+            if (!permissionGranted) {
+                return;
+            }
+            
+            await startCamera();
+        }
+    } catch (error) {
+        console.error('Error toggling camera:', error);
+        updateCameraStatus('Camera toggle failed', 'error');
+        showError('Camera Error', error.message || 'Failed to toggle camera');
     }
 }
 
@@ -373,19 +657,4 @@ function showError(title, message) {
     
     const modal = new bootstrap.Modal(elements.errorModal);
     modal.show();
-}
-
-
-
-// Utility Functions
-function escapeHtml(text) {
-    if (!text) return '';
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
-    return text.replace(/[&<>"']/g, m => map[m]);
 }

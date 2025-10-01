@@ -4,7 +4,7 @@
 import { getCookie } from '../utils/utils-module.js';
 
 // API endpoints
-const API_BASE = '/api/users';
+const API_BASE = `${window.location.origin}/api/users`;
 
 // Generic API request handler
 export async function apiRequest(endpoint, options = {}) {
@@ -14,6 +14,7 @@ export async function apiRequest(endpoint, options = {}) {
     }
 
     try {
+        console.log('API Request to:', endpoint, 'with options:', options);
         const response = await fetch(endpoint, {
             headers: {
                 'Content-Type': 'application/json',

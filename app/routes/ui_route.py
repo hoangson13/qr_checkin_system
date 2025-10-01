@@ -45,4 +45,7 @@ def validate(x_auth_secret_key: str = Header()):
     if x_auth_secret_key == dconfig.config_object.ADMIN_SECRET_KEY:
         return {"role": "admin"}
 
+    if x_auth_secret_key == dconfig.config_object.USER_SECRET_KEY:
+        return {"role": "user"}
+
     raise HTTPException(status_code=403, detail={"error": 2, "message": "Access Denied"})

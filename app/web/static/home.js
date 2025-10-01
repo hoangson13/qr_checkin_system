@@ -30,8 +30,12 @@ async function saveSecretKey() {
             
             document.cookie = `secretKey=${key}${cookieOptions}`;
             document.cookie = `role=${data.role}${cookieOptions}`;
-            
-            window.location.href = '/ui/users';
+
+            if (data.role == 'admin') {
+                window.location.href = '/ui/users';
+            } else {
+                window.location.href = '/ui/checkin';
+            }
         } else {
             await showErrorDialog({
                 title: 'Authentication Failed',

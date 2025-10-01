@@ -59,3 +59,15 @@ class UserDAO(BaseDAO):
     def update_user(self, user_id: str, updated_fields: dict):
         """Update user by user_id"""
         return self.update_many({"_id": ObjectId(user_id)}, {"$set": updated_fields})
+
+    def checkin(self, user_id: str):
+        """Check-in user by user_id"""
+        user = self.find_by_id(ObjectId(user_id))
+        if user is None:
+            raise ValueError("User not found")
+
+        return self.update_many({"_id": ObjectId(user_id)}, {"$set": {
+            "is_checked_in": True,
+            "check_in_time": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        }})

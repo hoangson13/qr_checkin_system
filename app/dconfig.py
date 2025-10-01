@@ -11,6 +11,7 @@ class ProductionConfig(Config):
     PORT_NUMBER = os.getenv('PORT_NUMBER')
 
     ADMIN_SECRET_KEY = os.getenv('ADMIN_SECRET_KEY')
+    USER_SECRET_KEY = os.getenv('USER_SECRET_KEY')
 
     # Folder config
     DATA_DIR = os.getenv('DATA_DIR')
@@ -33,6 +34,7 @@ class DevelopmentConfig(Config):
         PORT_NUMBER = '5000'
 
     ADMIN_SECRET_KEY = os.getenv('ADMIN_SECRET_KEY')
+    USER_SECRET_KEY = os.getenv('USER_SECRET_KEY')
 
     # Folder config
     if os.getenv('DATA_DIR'):

@@ -1,5 +1,3 @@
-import os
-
 import pandas as pd
 
 import traceback
@@ -7,21 +5,19 @@ from typing import Annotated
 
 from io import BytesIO
 
-import qrcode
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from starlette.responses import JSONResponse
 
-import dconfig
 import vnd_log
 from dao import user_dao
 from dao.user_dao import UserObj
 from services.qr_service import gen_qr
-from utils.authen import auth_secret_key
+from utils.authen import auth_admin_secret_key
 
 router = APIRouter(
     prefix="/api/users",
     tags=["users"],
-    dependencies=[Depends(auth_secret_key)]
+    dependencies=[Depends(auth_admin_secret_key)]
 )
 
 

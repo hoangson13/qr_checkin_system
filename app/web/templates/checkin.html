@@ -17,7 +17,7 @@
                 <i class="bi bi-camera me-2"></i>Check-in Scanner
             </a>
             <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="/logout">
+                <a class="nav-link" href="/ui">
                     <i class="bi bi-box-arrow-right me-1"></i>Logout
                 </a>
             </div>
@@ -72,7 +72,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <div class="row">
+                        <div class="row mb-2">
                             <div class="col-6">
                                 <button class="btn btn-outline-secondary w-100" id="toggleCameraBtn">
                                     <i class="bi bi-camera-video-off me-1"></i>Stop Camera
@@ -81,6 +81,13 @@
                             <div class="col-6">
                                 <button class="btn btn-outline-primary w-100" id="switchCameraBtn">
                                     <i class="bi bi-arrow-repeat me-1"></i>Switch Camera
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row" id="permissionRow" style="display: none;">
+                            <div class="col-12">
+                                <button class="btn btn-warning w-100" id="requestPermissionBtn">
+                                    <i class="bi bi-shield-exclamation me-1"></i>Request Camera Permission
                                 </button>
                             </div>
                         </div>
@@ -158,13 +165,13 @@
     </div>
 
     <!-- Load CSS files -->
-    <link rel="stylesheet" href="/static/styles/base.css">
-    <link rel="stylesheet" href="/static/styles/checkin.css">
+    <link rel="stylesheet" href="/ui/static/styles/base.css">
+    <link rel="stylesheet" href="/ui/static/styles/checkin.css">
 
     <!-- Load QR Scanner Library -->
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 
     <!-- Load JavaScript -->
-    <script type="module" src="/static/checkin.js"></script>
+    <script type="module" src="/ui/static/checkin.js"></script>
 </body>
 </html>
