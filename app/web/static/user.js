@@ -4,6 +4,7 @@
 import { formatDate } from './utils/utils-module.js';
 import { showSuccessToast, showErrorToast } from './components/dialog-utils.js';
 import { loadUsersAPI, saveUserAPI, deleteUserAPI } from './api/user-api.js';
+import { escapeHtml } from './utils/security.js';
 
 // Global variables
 let users = [];
@@ -72,10 +73,83 @@ window.addEventListener('beforeunload', function() {
     stopAutoRefresh();
 });
 
-// Auto-refresh functionality
+// Auto-refresh functionality using WebSocket
+let websocket = null;
+
 function startAutoRefresh() {
-    // Clear any existing interval
+    // Clear any existing connections
     stopAutoRefresh();
+    
+    try {
+        // Determine WebSocket protocol based on current protocol
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${wsProtocol}//${window.location.host}/ws/checkin`;
+        
+        websocket = new WebSocket(wsUrl);
+        
+        websocket.onopen = function(event) {
+            console.log('WebSocket connected for user updates');
+        };
+        
+        websocket.onmessage = function(event) {
+            try {
+                const data = JSON.parse(event.data);
+                console.log('WebSocket message received:', data);
+                
+                // Check if this is a new check-in event
+                if (data.action === 'new_checkin') {
+                    // Only reload if no modals are open and not currently loading
+                    if (!isAnyModalOpen() && !isLoading()) {
+                        // force reload page
+                        window.location.reload();
+                    }
+                }
+            } catch (error) {
+                console.error('Error parsing WebSocket message:', error);
+            }
+        };
+        
+        websocket.onclose = function(event) {
+            console.log('WebSocket connection closed:', event.code, event.reason);
+            
+            // Attempt to reconnect after 5 seconds if not manually closed
+            if (event.code !== 1000) {
+                setTimeout(() => {
+                    if (!websocket || websocket.readyState === WebSocket.CLOSED) {
+                        console.log('Attempting to reconnect WebSocket...');
+                        startAutoRefresh();
+                    }
+                }, 5000);
+            }
+        };
+        
+        websocket.onerror = function(error) {
+            console.error('WebSocket error:', error);
+        };
+        
+    } catch (error) {
+        console.error('Failed to create WebSocket connection:', error);
+        // Fallback to polling if WebSocket fails
+        fallbackToPolling();
+    }
+}
+
+function stopAutoRefresh() {
+    if (websocket) {
+        websocket.close(1000, 'Page refresh or navigation');
+        websocket = null;
+    }
+    
+    // Also clear any polling interval if it exists
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+        autoRefreshInterval = null;
+    }
+}
+
+// Fallback to polling if WebSocket is not available
+function fallbackToPolling() {
+    console.log('Falling back to polling for user updates');
     
     // Set up auto-refresh every 60 seconds (60000 ms)
     autoRefreshInterval = setInterval(() => {
@@ -85,13 +159,6 @@ function startAutoRefresh() {
             loadUsers(currentPage, currentSearch);
         }
     }, 60000);
-}
-
-function stopAutoRefresh() {
-    if (autoRefreshInterval) {
-        clearInterval(autoRefreshInterval);
-        autoRefreshInterval = null;
-    }
 }
 
 function isAnyModalOpen() {
@@ -517,18 +584,6 @@ function confirmDelete() {
 function showLoading(show) {
     elements.loadingIndicator.style.display = show ? 'block' : 'none';
     elements.usersTableBody.style.opacity = show ? '0.5' : '1';
-}
-
-
-function escapeHtml(text) {
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
-    return text ? text.replace(/[&<>"']/g, m => map[m]) : '';
 }
 
 function debounce(func, wait) {

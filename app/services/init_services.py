@@ -2,6 +2,7 @@ import os
 import dconfig
 import vnd_log
 from services.mongo_service import MongoDBConnectionManager
+from services.ws_manager import WSConnectionManager
 
 
 def on_startup(app):
@@ -12,6 +13,8 @@ def on_shutdown(app):
     db = MongoDBConnectionManager()
     db.close()
 
+
+ws_manager = WSConnectionManager()
 
 temp_dir = os.path.join(dconfig.config_object.DATA_DIR, "temp")
 os.makedirs(temp_dir, exist_ok=True)
