@@ -3,8 +3,6 @@
 
 import { getCookie } from '../utils/utils-module.js';
 
-// API endpoints
-const API_BASE = `${window.location.origin}/api/checkin`;
 
 // Generic API request handler
 export async function apiRequest(endpoint, options = {}) {
@@ -46,18 +44,7 @@ export async function apiRequest(endpoint, options = {}) {
 
 // Check-in user by ID
 export async function checkinUser(userId) {
-    if (!userId) {
-        throw new Error('INVALID_USER_ID');
-    }
-    const parts = userId.split(':');
-    userId = parts[parts.length - 1];
-    return await apiRequest(`${API_BASE}/checkin`, {
+    return await apiRequest(`${window.location.origin}/api/checkin/${userId}`, {
         method: 'POST',
-        body: JSON.stringify({ user_id: userId })
     });
-}
-
-// Get user by ID for verification
-export async function getUserById(userId) {
-    return await apiRequest(`${API_BASE}/${userId}`);
 }

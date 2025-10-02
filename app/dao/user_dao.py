@@ -66,6 +66,9 @@ class UserDAO(BaseDAO):
         if user is None:
             raise ValueError("User not found")
 
+        if user.get("is_checked_in"):
+            raise ValueError("User already checked in")
+
         return self.update_many({"_id": ObjectId(user_id)}, {"$set": {
             "is_checked_in": True,
             "check_in_time": datetime.utcnow(),

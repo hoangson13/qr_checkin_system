@@ -14,7 +14,6 @@ export async function apiRequest(endpoint, options = {}) {
     }
 
     try {
-        console.log('API Request to:', endpoint, 'with options:', options);
         const response = await fetch(endpoint, {
             headers: {
                 'Content-Type': 'application/json',

@@ -2,8 +2,8 @@
 // Handles QR code scanning and check-in functionality
 
 import { formatDate } from './utils/utils-module.js';
-import { showSuccessToast, showErrorToast } from './components/dialog-utils.js';
-import { checkinUser, getUserById } from './api/checkin-api.js';
+import { showSuccessToast } from './components/dialog-utils.js';
+import { checkinUser } from './api/checkin-api.js';
 
 // Global variables
 let cameraStream = null;
@@ -584,36 +584,26 @@ function extractUserIdFromQR(qrData) {
 
 async function performCheckin(userId) {
     try {
-        // Get user details first for verification
-        const user = await getUserById(userId);
-        
-        // Perform check-in
+        // Perform check-in - API returns user info in result.data
         const result = await checkinUser(userId);
         
-        // Show success modal
-        showCheckinResult(user, result, true);
+        // Show success modal with user data from check-in result
+        showCheckinResult(result.data,  true);
         
     } catch (error) {
         console.error('Check-in error:', error);
-        
-        // Try to get user info even if check-in failed
-        try {
-            const user = await getUserById(userId);
-            showCheckinResult(user, null, false, error.message);
-        } catch (userError) {
-            showError('Check-in Failed', error.message || 'Unknown user or check-in failed');
-        }
+        showError('Check-in Failed', error.message || 'Unknown user or check-in failed');
     }
 }
 
 // UI Functions
-function showCheckinResult(user, result, success, errorMessage = null) {
+function showCheckinResult(user, success, errorMessage = null) {
     // Update modal header
     if (success) {
         elements.checkinModalHeader.className = 'modal-header';
         elements.checkinModalLabel.innerHTML = `
             <i class="bi bi-check-circle me-2 text-success"></i>
-            ${result.action === 'check-in' ? 'Checked In' : 'Checked Out'}
+            ${user.is_checked_in ? 'Checked In' : 'Checked Out'}
         `;
     } else {
         elements.checkinModalHeader.className = 'modal-header bg-danger text-white';
@@ -631,13 +621,13 @@ function showCheckinResult(user, result, success, errorMessage = null) {
     elements.userAvatar.innerHTML = initial;
     
     // Update status badge
-    if (success && result) {
-        const isCheckedIn = result.action === 'check-in';
+    if (success && user) {
+        const isCheckedIn = user.is_checked_in;
         elements.statusBadge.className = `status-badge ${isCheckedIn ? 'checked-in' : 'checked-out'}`;
         elements.statusBadge.textContent = isCheckedIn ? 'Checked In' : 'Checked Out';
-        
-        elements.checkinTime.textContent = formatDate(result.timestamp || new Date().toISOString());
-        elements.checkinStatus.textContent = result.action === 'check-in' ? 'Present' : 'Left';
+
+        elements.checkinTime.textContent = formatDate(user.check_in_time || new Date().toISOString());
+        elements.checkinStatus.textContent = user.is_checked_in ? 'Present' : 'Left';
     } else {
         elements.statusBadge.className = 'status-badge error';
         elements.statusBadge.textContent = 'Error';
