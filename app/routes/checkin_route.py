@@ -28,7 +28,7 @@ async def checkin(user_id: str):
         # Broadcast check-in notification to all connected clients
         await ws_manager.broadcast({
             "action": "new_checkin",
-            "user": user
+            "data": user
         })
 
         return JSONResponse({

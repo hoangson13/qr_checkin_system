@@ -1,0 +1,300 @@
+/* Display Page Styles */
+
+body {
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Default Screen Styles */
+#defaultScreen {
+    animation: fadeIn 1s ease-in;
+}
+
+/* Welcome Screen Animation */
+.welcome-display {
+    animation: slideInUp 0.8s ease-out;
+}
+
+.welcome-animation {
+    animation: scaleIn 0.6s ease-out;
+}
+
+.welcome-title {
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+    animation: titleGlow 2s ease-in-out infinite alternate;
+}
+
+/* User Info Card */
+.user-info-card {
+    max-width: 800px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    animation: cardSlideIn 0.8s ease-out 0.3s both;
+}
+
+/* Guest Information Styling */
+#guestName {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    animation: nameHighlight 1.5s ease-in-out 0.5s both;
+}
+
+#guestTitle, #guestDepartment {
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+#guestSeat {
+    animation: seatBounce 0.6s ease-out 1s both;
+}
+
+/* Connection Status */
+#connectionStatus {
+    transition: all 0.3s ease;
+}
+
+#connectionStatus.bg-danger {
+    animation: statusBlink 1s infinite;
+}
+
+/* Current Time */
+#currentTime {
+    font-family: 'Courier New', monospace;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes titleGlow {
+    from {
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+    }
+    to {
+        text-shadow: 3px 3px 20px rgba(255, 215, 0, 0.5), 
+                     3px 3px 6px rgba(0, 0, 0, 0.3);
+    }
+}
+
+@keyframes cardSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes nameHighlight {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes seatBounce {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(-5px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes statusBlink {
+    0%, 50% {
+        opacity: 1;
+    }
+    51%, 100% {
+        opacity: 0.3;
+    }
+}
+
+/* Screen Transition Effects */
+.screen-fade-out {
+    animation: fadeOut 0.5s ease-out forwards;
+}
+
+.screen-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+/* Success Check Animation */
+.bi-check-circle-fill {
+    animation: checkSuccess 0.8s ease-out;
+}
+
+@keyframes checkSuccess {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .display-3 {
+        font-size: 2.5rem;
+    }
+    
+    .display-5 {
+        font-size: 2rem;
+    }
+    
+    .display-2 {
+        font-size: 2rem;
+    }
+    
+    .display-4 {
+        font-size: 1.8rem;
+    }
+    
+    .fs-2 {
+        font-size: 1.5rem !important;
+    }
+    
+    .fs-3 {
+        font-size: 1.25rem !important;
+    }
+    
+    .user-info-card {
+        margin: 0 1rem;
+        padding: 1.5rem;
+    }
+    
+    .bi-check-circle-fill {
+        font-size: 5rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .display-3 {
+        font-size: 2rem;
+    }
+    
+    .display-2 {
+        font-size: 1.8rem;
+    }
+    
+    .display-4 {
+        font-size: 1.5rem;
+    }
+    
+    .user-info-card {
+        padding: 1rem;
+    }
+}
+
+/* Full Screen Mode */
+.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+}
+
+/* Print Styles (if needed for kiosk mode) */
+@media print {
+    body {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .welcome-display {
+        background: white !important;
+        color: black !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    body {
+        background: #000080;
+    }
+    
+    .user-info-card {
+        background: rgba(255, 255, 255, 0.9);
+        color: #000;
+        border: 2px solid #fff;
+    }
+    
+    .text-light {
+        color: #fff !important;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
