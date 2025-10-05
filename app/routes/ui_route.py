@@ -37,13 +37,6 @@ async def checkin(request: Request):
     )
 
 
-@router.get("/display", response_class=HTMLResponse)
-async def display(request: Request):
-    return templates.TemplateResponse(
-        name="display.html", context={'request': request}
-    )
-
-
 @router.get("/validate")
 def validate(x_auth_secret_key: str = Header()):
     if x_auth_secret_key is None:
