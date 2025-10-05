@@ -44,6 +44,13 @@ async def display(request: Request):
     )
 
 
+@router.get("/md", response_class=HTMLResponse)
+async def display(request: Request):
+    return templates.TemplateResponse(
+        name="md.html", context={'request': request}
+    )
+
+
 @router.get("/validate")
 def validate(x_auth_secret_key: str = Header()):
     if x_auth_secret_key is None:
