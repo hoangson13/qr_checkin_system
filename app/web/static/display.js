@@ -206,10 +206,10 @@ function showWelcomeScreen(userData) {
         elements.welcomeScreen.classList.remove('screen-fade-out');
         elements.welcomeScreen.classList.add('screen-fade-in');
         
-        // Auto-return to default screen after 8 seconds
+        // Auto-return to default screen after 60 seconds
         welcomeTimeout = setTimeout(() => {
             showDefaultScreen();
-        }, 8000);
+        }, 60000);
     }, 500);
 }
 
@@ -240,20 +240,6 @@ function clearWelcomeTimeout() {
         welcomeTimeout = null;
     }
 }
-
-// Testing Functions (for development/admin use)
-window.testWelcome = function(testData = null) {
-    const sampleData = testData || {
-        user_id: 'DB001',
-        name: 'Nguyễn Văn An',
-        title: 'Chủ tịch UBND',
-        department: 'UBND Thành phố Hà Nội',
-        seat_number: 15
-    };
-    
-    console.log('Testing welcome display with sample data:', sampleData);
-    showWelcomeScreen(sampleData);
-};
 
 window.showDefault = function() {
     console.log('Returning to default screen');

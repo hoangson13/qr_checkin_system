@@ -3,7 +3,7 @@
 body {
     overflow: hidden;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--primary-color);
 }
 
 /* Default Screen Styles */
@@ -33,7 +33,7 @@ body {
     padding: 2rem;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-lg);
     animation: cardSlideIn 0.8s ease-out 0.3s both;
 }
 
@@ -41,10 +41,12 @@ body {
 #guestName {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     animation: nameHighlight 1.5s ease-in-out 0.5s both;
+    color: #ffc107; /* Keep yellow for name highlight */
 }
 
 #guestTitle, #guestDepartment {
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    color: var(--gray-100);
 }
 
 #guestSeat {
@@ -105,7 +107,7 @@ body {
         text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
     }
     to {
-        text-shadow: 3px 3px 20px rgba(255, 215, 0, 0.5), 
+        text-shadow: 3px 3px 20px #ffc107, 
                      3px 3px 6px rgba(0, 0, 0, 0.3);
     }
 }
@@ -263,30 +265,30 @@ body {
 /* Print Styles (if needed for kiosk mode) */
 @media print {
     body {
-        background: white !important;
-        color: black !important;
+        background: var(--bg-white) !important;
+        color: var(--text-primary) !important;
     }
     
     .welcome-display {
-        background: white !important;
-        color: black !important;
+        background: var(--bg-white) !important;
+        color: var(--text-primary) !important;
     }
 }
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
     body {
-        background: #000080;
+        background: var(--primary-darker);
     }
     
     .user-info-card {
         background: rgba(255, 255, 255, 0.9);
-        color: #000;
-        border: 2px solid #fff;
+        color: var(--text-primary);
+        border: 2px solid var(--bg-white);
     }
     
     .text-light {
-        color: #fff !important;
+        color: var(--bg-white) !important;
     }
 }
 
