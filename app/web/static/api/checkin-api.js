@@ -32,8 +32,7 @@ export async function apiRequest(endpoint, options = {}) {
                 throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
             } catch (parseError) {
                 throw new Error(`HTTP error! status: ${response.status}`);
-            }
-        }
+            }       }
 
         return await response.json();
     } catch (error) {

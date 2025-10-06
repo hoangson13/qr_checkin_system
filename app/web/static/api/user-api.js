@@ -3,9 +3,6 @@
 
 import { getCookie } from '../utils/utils-module.js';
 
-// API endpoints
-const API_BASE = `${window.location.origin}/api/users`;
-
 // Generic API request handler
 export async function apiRequest(endpoint, options = {}) {
     const secretKey = getCookie('secretKey');
@@ -45,13 +42,13 @@ export async function loadUsersAPI(page = 0, search = '') {
         search: search
     });
 
-    return await apiRequest(`${API_BASE}?${params}`);
+    return await apiRequest(`${window.location.origin}/api/users?${params}`);
 }
 
 // Create or update user
 export async function saveUserAPI(userData, userId = null) {
     const isEdit = userId !== null;
-    const endpoint = isEdit ? `${API_BASE}/${userId}` : API_BASE;
+    const endpoint = isEdit ? `${window.location.origin}/api/users/${userId}` : `${window.location.origin}/api/users`;
     const method = isEdit ? 'PUT' : 'POST';
     
     return await apiRequest(endpoint, {
@@ -62,12 +59,12 @@ export async function saveUserAPI(userData, userId = null) {
 
 // Delete user
 export async function deleteUserAPI(userId) {
-    return await apiRequest(`${API_BASE}/${userId}`, {
+    return await apiRequest(`${window.location.origin}/api/users/${userId}`, {
         method: 'DELETE'
     });
 }
 
 // Get single user by ID
 export async function getUserAPI(userId) {
-    return await apiRequest(`${API_BASE}/${userId}`);
+    return await apiRequest(`${window.location.origin}/api/users/${userId}`);
 }
