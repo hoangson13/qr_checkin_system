@@ -16,5 +16,6 @@ def on_shutdown(app):
 
 ws_manager = WSConnectionManager()
 
+os.makedirs(dconfig.config_object.DATA_DIR, exist_ok=True)
 temp_dir = os.path.join(dconfig.config_object.DATA_DIR, "temp")
 os.makedirs(temp_dir, exist_ok=True)
