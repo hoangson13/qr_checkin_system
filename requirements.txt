@@ -3,7 +3,7 @@ Jinja2==3.1.4
 python-multipart==0.0.18
 fastapi==0.112.0
 requests==2.31.0
-pymongo==4.11.3
+pymongo[srv]==3.12
 
 pandas==2.0.3
 numpy==1.24.4
