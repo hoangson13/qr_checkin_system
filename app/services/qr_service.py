@@ -6,7 +6,7 @@ import dconfig
 
 qr_dir = os.path.join(dconfig.config_object.DATA_DIR, "qr")
 if not os.path.isdir(qr_dir):
-    os.mkdir(qr_dir)
+    os.makedirs(qr_dir, exist_ok=True)
 
 
 def gen_qr(user_id):
