@@ -27,13 +27,7 @@ body {
 
 /* User Info Card */
 .user-info-card {
-    max-width: 800px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    padding: 2rem;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: var(--shadow-lg);
+    max-width: 900px;
     animation: cardSlideIn 0.8s ease-out 0.3s both;
 }
 
@@ -247,9 +241,6 @@ body {
         font-size: 1.5rem;
     }
     
-    .user-info-card {
-        padding: 1rem;
-    }
 }
 
 /* Full Screen Mode */

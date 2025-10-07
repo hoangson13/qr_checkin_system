@@ -19,11 +19,7 @@
                 <!-- Default Welcome Screen -->
                 <div id="defaultScreen" class="text-center text-white">
                     <div class="mb-5">
-                        <i class="bi bi-door-open display-1 mb-4"></i>
-                        <h1 class="display-3 fw-bold mb-3">Chào mừng</h1>
-                        <h2 class="display-5 mb-4">Welcome to the Event</h2>
-                        <p class="lead fs-3">Vui lòng quét mã QR để check-in</p>
-                        <p class="fs-4 text-light">Please scan your QR code to check in</p>
+                        <!-- Welcome text removed since background image contains it -->
                     </div>
                     
                     <!-- Connection Status -->
@@ -42,27 +38,21 @@
                 <!-- Welcome Message Screen (Hidden by default) -->
                 <div id="welcomeScreen" class="welcome-display text-center text-white" style="display: none;">
                     <div class="welcome-animation">
-                        <div class="mb-4">
-                            <i class="bi bi-check-circle-fill text-success" style="font-size: 8rem;"></i>
-                        </div>
-                        
-                        <h1 class="display-2 fw-bold mb-4 welcome-title">Chào mừng!</h1>
-                        
-                        <div class="user-info-card mx-auto">
-                            <div class="mb-3">
-                                <div id="guestName" class="display-4 fw-bold text-warning mb-2">Tên khách</div>
-                                <div id="guestTitle" class="fs-2 text-light mb-2">Chức danh</div>
-                                <div id="guestDepartment" class="fs-3 text-light mb-2">Đơn vị</div>
-                                <div id="guestSeat" class="fs-4 text-info">
-                                    <i class="bi bi-geo-alt me-2"></i>Ghế số: <span id="seatNumber">--</span>
+                        <div class="mt-5 pt-5" style="margin-top: 26rem !important;"></div>
+                            <!-- Avatar (hidden by default, shown for tncs event) -->
+                            <div id="guestAvatar" class="mb-4" style="display: none;">
+                                <img id="avatarImage" src="" alt="User Avatar" class="rounded-circle border border-white" style="width: 450px; height: 450px; object-fit: cover;">
+                            </div>
+                            
+                            <div class="user-info-card mx-auto">
+                                <div class="mb-3">
+                                    <div id="guestName" class="fw-bold text-danger mb-3" style="font-size: 4rem; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Tên khách</div>
+                                    <div id="guestTitle" class="text-danger mb-3" style="font-size: 3rem; line-height: 1.2; padding-top: 2rem;">Chức danh</div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="mt-4">
-                            <p class="fs-3 text-light">Welcome to our event!</p>
-                            <p class="fs-4 text-light">Enjoy your time with us</p>
-                        </div>
+                        <!-- Welcome messages removed since background image contains them -->
                         
                         <!-- Check-in Time -->
                         <div class="mt-4">
@@ -81,6 +71,18 @@
     <link rel="stylesheet" href="/ui/static/styles/display.css">
 
     <!-- Load JavaScript -->
+    <script>
+        var event_name = "{{event_name}}";
+        
+        // Set background image based on event name
+        if (event_name) {
+            document.body.style.backgroundImage = `url('/ui/static/images/${event_name}.jpg')`;
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundPosition = 'center';
+            document.body.style.backgroundRepeat = 'no-repeat';
+            document.body.style.backgroundAttachment = 'fixed';
+        }
+    </script>
     <script type="module" src="/ui/static/display.js"></script>
 </body>
 </html>

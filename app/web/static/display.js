@@ -22,10 +22,12 @@ const elements = {
     // Guest information
     guestName: document.getElementById('guestName'),
     guestTitle: document.getElementById('guestTitle'),
-    guestDepartment: document.getElementById('guestDepartment'),
     guestSeat: document.getElementById('guestSeat'),
-    seatNumber: document.getElementById('seatNumber'),
-    checkinTime: document.getElementById('checkinTime')
+    checkinTime: document.getElementById('checkinTime'),
+    
+    // Avatar elements
+    guestAvatar: document.getElementById('guestAvatar'),
+    avatarImage: document.getElementById('avatarImage')
 };
 
 // Initialize the application
@@ -185,10 +187,37 @@ function showWelcomeScreen(userData) {
     clearWelcomeTimeout();
     
     // Populate user information with safe HTML escaping
-    elements.guestName.textContent = userData.name || 'Khách quý';
+    const guestName = userData.name || 'Khách quý';
+    const guestNameUpper = guestName.toUpperCase();
+    elements.guestName.textContent = guestNameUpper;
     elements.guestTitle.textContent = userData.title || 'Đại biểu';
-    elements.guestDepartment.textContent = userData.department || 'Tổ chức';
-    elements.seatNumber.textContent = userData.seat_number || '--';
+    
+    // Dynamically adjust font size based on name length to keep it on one line
+    adjustNameFontSize(guestNameUpper);
+    
+    // Handle avatar display for TNCS event
+    if (window.event_name === 'tncs' && userData.user_id) {
+        const avatarUrl = `/ui/static/images/avatars/${userData.user_id}.png`;
+        
+        // Show avatar container
+        elements.guestAvatar.style.display = 'block';
+        elements.avatarImage.src = avatarUrl;
+        elements.avatarImage.alt = `Avatar of ${userData.name || 'User'}`;
+        
+        // Handle avatar load error - hide avatar if image doesn't exist
+        elements.avatarImage.onerror = function() {
+            console.log(`Avatar not found for user ${userData.user_id}, hiding avatar`);
+            elements.guestAvatar.style.display = 'none';
+        };
+        
+        // Reset onerror handler on successful load
+        elements.avatarImage.onload = function() {
+            console.log(`Avatar loaded successfully for user ${userData.user_id}`);
+        };
+    } else {
+        // Hide avatar for non-TNCS events or missing user_id
+        elements.guestAvatar.style.display = 'none';
+    }
     
     // Show current check-in time
     const now = new Date();
@@ -239,6 +268,27 @@ function clearWelcomeTimeout() {
         clearTimeout(welcomeTimeout);
         welcomeTimeout = null;
     }
+}
+
+// Function to adjust font size based on name length
+function adjustNameFontSize(name) {
+    const nameLength = name.length;
+    let fontSize = '5rem'; // Default size
+    
+    // Adjust font size based on character count
+    if (nameLength > 25) {
+        fontSize = '3rem';      // Very long names
+    } else if (nameLength > 20) {
+        fontSize = '3.5rem';    // Long names
+    } else if (nameLength > 15) {
+        fontSize = '4rem';      // Medium-long names
+    } else if (nameLength > 10) {
+        fontSize = '4.5rem';    // Medium names
+    }
+    // Names 10 characters or less keep the default 5rem
+    
+    // Apply the font size
+    elements.guestName.style.fontSize = fontSize;
 }
 
 window.showDefault = function() {

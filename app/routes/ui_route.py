@@ -38,9 +38,13 @@ async def checkin(request: Request):
 
 
 @router.get("/display", response_class=HTMLResponse)
-async def display(request: Request):
+async def display(request: Request, event_name: str = None):
+    if event_name is None:
+        event_name = "mttq"
+    elif event_name not in ["mttq", "lhpn", "tncs"]:
+        return HTMLResponse(content="Event not found", status_code=404)
     return templates.TemplateResponse(
-        name="display.html", context={'request': request}
+        name="display.html", context={'request': request, 'event_name': event_name}
     )
 
 
