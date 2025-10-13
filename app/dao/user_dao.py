@@ -12,8 +12,6 @@ class UserObj(BaseObj):
     _id: str = None
     user_id: str = None
     name: str = None
-    title: str = None
-    department: str = None
     seat_number: int = None
     is_checked_in: bool = False
     check_in_time: datetime = None

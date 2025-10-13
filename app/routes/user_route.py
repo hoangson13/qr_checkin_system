@@ -106,26 +106,26 @@ def import_users(file: Annotated[UploadFile, File()]):
             raise ValueError("Only CSV files are supported")
 
         content = file.file.read()
-
-        df = pd.read_excel(BytesIO(content))
-
-        required_columns = {'user_id', 'name', 'title', 'department', 'seat_number'}
-        if not required_columns.issubset(df.columns):
-            raise ValueError(f"Missing required columns: {required_columns - set(df.columns)}")
-
+        sheets = pd.ExcelFile(BytesIO(content))
         user_ids = []
-        for _, row in df.iterrows():
-            user = UserObj(
-                user_id=row['user_id'],
-                name=row['name'],
-                title=row.get('title'),
-                department=row.get('department'),
-                seat_number=int(row['seat_number']) if not pd.isna(row['seat_number']) else None,
-                is_checked_in=bool(row.get('is_checked_in', False))
-            )
-            user_id = user_dao.insert_one(user.to_dict())
-            gen_qr(user_id)
-            user_ids.append(user_id)
+        for sheet in sheets.sheet_names:
+            df = pd.read_excel(sheets, sheet_name=sheet)
+            df = df.where(pd.notnull(df), None)
+
+            required_columns = {'Ma_db', 'Ho_va_ten', 'So_ghe'}
+            if not required_columns.issubset(df.columns):
+                raise ValueError(f"Missing required columns: {required_columns - set(df.columns)}")
+
+            for _, row in df.iterrows():
+                user = UserObj(
+                    user_id=row['Ma_db'],
+                    name=row['Ho_va_ten'],
+                    seat_number=int(row['So_ghe']) if not pd.isna(row['So_ghe']) else None,
+                    is_checked_in=bool(row.get('is_checked_in', False))
+                )
+                user_id = user_dao.insert_one(user.to_dict())
+                gen_qr(row['Ma_db'], user_id)
+                user_ids.append(user_id)
         return JSONResponse({
             "message": "Import users successfully",
             "data": user_ids,

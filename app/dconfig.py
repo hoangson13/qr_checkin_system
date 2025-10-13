@@ -48,6 +48,8 @@ class DevelopmentConfig(Config):
 
     # DATABASE CONFIG
     # sudo docker run --name mongodb -d -p 27017:27017 mongodb/mongodb-community-server:latest
+    # with persist data
+    # sudo docker run --name mongodb -d -p 27017:27017 -v ~/data/db:/data/db mongodb/mongodb-community-server:latest
     DB_CONNECTION_STRING = os.getenv('DB_CONNECTION_STRING')
     DB_NAME = os.getenv('DB_NAME')
 

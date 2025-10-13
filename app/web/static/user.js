@@ -271,7 +271,7 @@ function renderUsersTable() {
     if (users.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="9" class="text-center py-4 text-muted">
+                <td colspan="6" class="text-center py-4 text-muted">
                     <i class="bi bi-inbox fs-3"></i>
                     <p class="mt-2">No users found matching your criteria</p>
                 </td>
@@ -304,10 +304,6 @@ function createUserRow(user) {
         </td>
         <td>
             <span class="fw-medium">${escapeHtml(user.name || 'N/A')}</span>
-        </td>
-        <td>${escapeHtml(user.title || 'N/A')}</td>
-        <td>
-            <span class="fw-medium">${escapeHtml(user.department || 'N/A')}</span>
         </td>
         <td>
             <span class="badge bg-secondary">
@@ -505,8 +501,6 @@ window.editUser = function(userId) {
         // Populate form fields
         elements.userId.value = user.user_id || '';
         elements.userName.value = user.name || '';
-        elements.userTitle.value = user.title || '';
-        elements.userDepartment.value = user.department || '';
         elements.seatNumber.value = user.seat_number || '';
         elements.checkInStatus.value = user.is_checked_in ? 'true' : 'false';
         
