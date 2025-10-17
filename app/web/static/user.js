@@ -271,7 +271,7 @@ function renderUsersTable() {
     if (users.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" class="text-center py-4 text-muted">
+                <td colspan="7" class="text-center py-4 text-muted">
                     <i class="bi bi-inbox fs-3"></i>
                     <p class="mt-2">No users found matching your criteria</p>
                 </td>
@@ -305,6 +305,7 @@ function createUserRow(user) {
         <td>
             <span class="fw-medium">${escapeHtml(user.name || 'N/A')}</span>
         </td>
+        <td>${escapeHtml(user.title || 'N/A')}</td>
         <td>
             <span class="badge bg-secondary">
                 <i class="bi bi-geo-alt me-1"></i>${user.seat_number || 'N/A'}
@@ -501,6 +502,7 @@ window.editUser = function(userId) {
         // Populate form fields
         elements.userId.value = user.user_id || '';
         elements.userName.value = user.name || '';
+        elements.userTitle.value = user.title || '';
         elements.seatNumber.value = user.seat_number || '';
         elements.checkInStatus.value = user.is_checked_in ? 'true' : 'false';
         
@@ -525,7 +527,7 @@ window.viewUserQR = function(userId) {
         elements.qrUserId.textContent = `ID: ${user.user_id || 'N/A'}`;
         
         // Set QR code image source
-        elements.qrCodeImage.src = `/qr/${user._id}.png`;
+        elements.qrCodeImage.src = `/qr/${user.user_id}_${user._id}.png`;
         elements.qrCodeImage.alt = `QR Code for ${user.name || user.user_id}`;
         
         // Store current user for download functionality

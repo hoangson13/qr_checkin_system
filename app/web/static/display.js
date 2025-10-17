@@ -190,13 +190,18 @@ function showWelcomeScreen(userData) {
     const guestName = userData.name || 'Khách quý';
     const guestNameUpper = guestName.toUpperCase();
     elements.guestName.textContent = guestNameUpper;
-    elements.guestTitle.textContent = userData.title || 'Đại biểu';
+    
+    // Handle title with line breaks
+    const guestTitle = userData.title || 'Đại biểu';
+    // Convert line breaks to HTML <br> tags for display
+    const titleWithBreaks = guestTitle.replace(/\n/g, '<br>');
+    elements.guestTitle.innerHTML = titleWithBreaks;
     
     // Dynamically adjust font size based on name length to keep it on one line
     adjustNameFontSize(guestNameUpper);
     
-    // Handle avatar display for TNCS event
-    if (window.event_name === 'tncs' && userData.user_id) {
+    // Handle avatar display for lhpn event
+    if (window.event_name === 'lhpn' && userData.user_id) {
         const avatarUrl = `/ui/static/images/avatars/${userData.user_id}.png`;
         
         // Show avatar container
@@ -208,15 +213,21 @@ function showWelcomeScreen(userData) {
         elements.avatarImage.onerror = function() {
             console.log(`Avatar not found for user ${userData.user_id}, hiding avatar`);
             elements.guestAvatar.style.display = 'none';
+            elements.guestName.style.marginTop = '32rem';
         };
         
         // Reset onerror handler on successful load
         elements.avatarImage.onload = function() {
             console.log(`Avatar loaded successfully for user ${userData.user_id}`);
         };
-    } else {
-        // Hide avatar for non-TNCS events or missing user_id
+
+        elements.guestName.style.marginTop = '0rem';
+    } else if (window.event_name === 'mttq') {
         elements.guestAvatar.style.display = 'none';
+        elements.guestName.style.marginTop = '32rem';
+    } else {
+        elements.guestAvatar.style.display = 'none';
+        elements.guestName.style.marginTop = '15rem';
     }
     
     // Show current check-in time
@@ -277,13 +288,13 @@ function adjustNameFontSize(name) {
     
     // Adjust font size based on character count
     if (nameLength > 25) {
-        fontSize = '3rem';      // Very long names
+        fontSize = '3.5rem';      // Very long names
     } else if (nameLength > 20) {
-        fontSize = '3.5rem';    // Long names
+        fontSize = '4rem';    // Long names
     } else if (nameLength > 15) {
-        fontSize = '4rem';      // Medium-long names
+        fontSize = '4.5rem';      // Medium-long names
     } else if (nameLength > 10) {
-        fontSize = '4.5rem';    // Medium names
+        fontSize = '5rem';    // Medium names
     }
     // Names 10 characters or less keep the default 5rem
     

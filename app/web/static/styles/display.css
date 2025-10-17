@@ -35,12 +35,12 @@ body {
 #guestName {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     animation: nameHighlight 1.5s ease-in-out 0.5s both;
-    color: #ffc107; /* Keep yellow for name highlight */
+    color: #ff2400; /* Keep red for name highlight */
 }
 
 #guestTitle, #guestDepartment {
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-    color: var(--gray-100);
+    color: #ff2400;
 }
 
 #guestSeat {

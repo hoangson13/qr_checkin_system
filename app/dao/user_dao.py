@@ -12,6 +12,7 @@ class UserObj(BaseObj):
     _id: str = None
     user_id: str = None
     name: str = None
+    title: str = None
     seat_number: int = None
     is_checked_in: bool = False
     check_in_time: datetime = None
@@ -69,6 +70,6 @@ class UserDAO(BaseDAO):
 
         return self.update_many({"_id": ObjectId(user_id)}, {"$set": {
             "is_checked_in": True,
-            "check_in_time": datetime.utcnow(),
-            "updated_at": datetime.utcnow()
+            "check_in_time": datetime.now(),
+            "updated_at": datetime.now()
         }})
